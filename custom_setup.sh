@@ -19,9 +19,10 @@ cd mattermost-docker
 docker-compose build
 
 # create self signed cert and copy to destination
+# https://letsencrypt.org/de/docs/certificates-for-localhost/
 mkdir -pv ./volumes/app/mattermost/{data,logs,config,plugins,client-plugins}
 sudo chown -R 2000:2000 ./volumes/app/mattermost/
-openssl req -x509 -out /home/simon/cert/localhost.crt -keyout /home/simon/cert/key-no-password.pem -newkey rsa:2048 -nodes -sha256 -subj '/CN=localhost' -extensions EXT -config <( printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
+openssl req -x509 -out /home/simon/cert/localhost.crt -keyout /home/simon/cert/key-no-password.pem -newkey rsa:2048 -nodes -days 1000 -sha256 -subj '/CN=localhost' -extensions EXT -config <( printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
 openssl x509 -in /home/simon/cert/localhost.crt -out /home/simon/cert/cert.pem -outform PEM
 rm -f /home/simon/cert/localhost.crt
 cp -a /home/simon/cert/. /home/simon/mattermost-docker/volumes/web/cert
